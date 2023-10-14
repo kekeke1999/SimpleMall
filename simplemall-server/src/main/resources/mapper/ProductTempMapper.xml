@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.ProductTempMapper">
+  <resultMap id="BaseResultMap" type="com.keke.domain.Product">
+    <id column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="product_count" jdbcType="INTEGER" property="productCount" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="cover_img" jdbcType="VARCHAR" property="coverImg" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    product_id, product_name, price, product_count, user_id, cover_img, intro, category,
+    img
+  </sql>
+
+  <select id="selectTempProductsByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_temp
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="searchProduct" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_temp
+    where product_name like concat(concat('%',#{word}),'%')
+  </select>
+
+  <delete id="deleteFromProductTemp" parameterType="java.lang.Integer">
+    delete from product_temp
+    where product_id = #{productId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertIntoProductTemp" parameterType="com.keke.domain.Product">
+    insert into product_temp
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="productCount != null">
+        product_count,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="coverImg != null">
+        cover_img,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="img != null">
+        img,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="productCount != null">
+        #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="coverImg != null">
+        #{coverImg,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        #{img,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectProductById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_temp
+    where product_id =#{productId,jdbcType=INTEGER}
+  </select>
+
+
+</mapper>

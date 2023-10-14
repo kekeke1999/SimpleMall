@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.OrderMapper">
+
+  <resultMap id="BaseResultMap" type="com.keke.domain.Order">
+    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="address_id" jdbcType="INTEGER" property="addressId" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="pay_way" jdbcType="VARCHAR" property="payWay" />
+  </resultMap>
+
+  <resultMap id="ResultMapp" type="com.keke.domain.OrderMore">
+    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="address_id" jdbcType="INTEGER" property="addressId" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="pay_way" jdbcType="VARCHAR" property="payWay" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    order_id, user_id, create_time, price, status, address_id, pay_time, pay_way
+  </sql>
+
+  <update id="closeOrder" parameterType="java.lang.Integer">
+    update `order` set status = 5 where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+  <update id="deliverOrder" parameterType="java.lang.Integer">
+    update `order` set status = 3 where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+
+  <select id="searchOrder" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, `user`.username from `order`,`user` where `order`.status = #{status,jdbcType=INTEGER} and `order`.create_time like concat(concat('%',#{word}),'%') and user.user_id = `order`.user_id
+  </select>
+
+  <select id="selectUnpayedOrders" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 1 and user.user_id = `order`.user_id
+  </select>
+
+  <select id="selectUndeliveredOrders" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 2 and user.user_id = `order`.user_id
+  </select>
+
+  <select id="selectUnpayedOrdersByUserId" parameterType="java.lang.Integer" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 1 and user.user_id = `order`.user_id and `order`.user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectOrder" parameterType="java.lang.Integer" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where user.user_id = `order`.user_id and `order`.order_id=#{orderId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectUndeliveredOrdersByUserId" parameterType="java.lang.Integer" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 2 and user.user_id = `order`.user_id and `order`.user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectUnconfirmedOrdersByUserId" parameterType="java.lang.Integer" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 3 and user.user_id = `order`.user_id and `order`.user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectFinishedOrdersByUserId" parameterType="java.lang.Integer" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 4 and user.user_id = `order`.user_id and `order`.user_id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectUnconfirmedOrders" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 3 and user.user_id = `order`.user_id
+  </select>
+
+  <select id="selectFinishedOrders" resultMap="ResultMapp">
+    select `order`.order_id, `order`.user_id, `order`.create_time, `order`.price, `order`.status, `order`.pay_time, `order`.address_id, `order`.pay_way, user.username from `order`,user where `order`.status = 4 and user.user_id = `order`.user_id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.keke.domain.Order">
+    insert into order (order_id, user_id, create_time,
+      price, status)
+    values (#{orderId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{price,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keke.domain.Order">
+    insert into order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keke.domain.Order">
+    update order
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keke.domain.Order">
+    update order
+    set user_id = #{userId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      price = #{price,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+</mapper>
