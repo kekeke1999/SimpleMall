@@ -1,2 +1,2 @@
 # SimpleMall
-A Online Mall System
+Online Mall System
